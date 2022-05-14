@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { client } = require('./config/connectDB');
+const { getServices } = require('./controllers/serviceController');
+const { createBooking } = require('./controllers/bookingController');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,13 +23,8 @@ async function run() {
       console.log(`server running at port: ${PORT}`);
     });
 
-    const serviceCollection = client.db('doctors_portal').collection('services');
-
-    app.get('/services', async (req, res) => {
-      const services = await serviceCollection.find({}).toArray();
-
-      res.send(services);
-    });
+    app.get('/services', getServices);
+    app.post('/bookings', createBooking);
   } finally {
   }
 }
