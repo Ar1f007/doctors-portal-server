@@ -16,3 +16,11 @@ exports.createBooking = async (req, res) => {
   const response = await bookingCollection.insertOne(booking);
   return res.send({ success: true, response });
 };
+
+exports.getBookings = async (req, res) => {
+  const patientEmail = req.query.patientEmail;
+  const query = { patientEmail };
+  const bookings = await bookingCollection.find(query).toArray();
+
+  res.send(bookings);
+};

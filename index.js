@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { client } = require('./config/connectDB');
-const { getServices } = require('./controllers/serviceController');
-const { createBooking } = require('./controllers/bookingController');
+const { getServices, getAvailableBookingSlot } = require('./controllers/serviceController');
+const { createBooking, getBookings } = require('./controllers/bookingController');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +24,9 @@ async function run() {
     });
 
     app.get('/services', getServices);
+    app.get('/services/available-slots', getAvailableBookingSlot);
+
+    app.get('/bookings', getBookings);
     app.post('/bookings', createBooking);
   } finally {
   }
