@@ -20,7 +20,7 @@ exports.createBooking = async (req, res) => {
 exports.getBookings = async (req, res) => {
   const email = req.user.email;
   const patientEmail = req.query.patientEmail;
-  console.log(email, patientEmail);
+
   if (email === patientEmail) {
     const query = { patientEmail };
     const bookings = await bookingCollection.find(query).toArray();

@@ -4,7 +4,7 @@ require('dotenv').config();
 const { client } = require('./config/connectDB');
 const { getServices, getAvailableBookingSlot } = require('./controllers/serviceController');
 const { createBooking, getBookings } = require('./controllers/bookingController');
-const { createUser } = require('./controllers/userController');
+const { createUser, getUsers } = require('./controllers/userController');
 const { verifyToken } = require('./middleware/verifyToken');
 
 const app = express();
@@ -31,6 +31,7 @@ async function run() {
     app.get('/bookings', verifyToken, getBookings);
     app.post('/bookings', createBooking);
 
+    app.get('/users', getUsers);
     app.put('/users/:email', createUser);
   } finally {
   }
