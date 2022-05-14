@@ -1,5 +1,6 @@
 const { client } = require('../config/connectDB');
 const userCollection = client.db('doctors_portal').collection('users');
+const jwt = require('jsonwebtoken');
 
 exports.createUser = async (req, res) => {
   const email = req.params.email;
@@ -9,6 +10,7 @@ exports.createUser = async (req, res) => {
   const updateDoc = { $set: { email: user } };
 
   const result = await userCollection.updateOne(filter, updateDoc, options);
+  const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-  res.send(result);
+  res.send({ result, token });
 };

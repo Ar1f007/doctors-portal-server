@@ -4,7 +4,7 @@ require('dotenv').config();
 const { client } = require('./config/connectDB');
 const { getServices, getAvailableBookingSlot } = require('./controllers/serviceController');
 const { createBooking, getBookings } = require('./controllers/bookingController');
-const { createUser } = require('./controllers/userControlle');
+const { createUser } = require('./controllers/userController');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
