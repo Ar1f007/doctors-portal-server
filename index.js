@@ -4,6 +4,7 @@ require('dotenv').config();
 const { client } = require('./config/connectDB');
 const { getServices, getAvailableBookingSlot } = require('./controllers/serviceController');
 const { createBooking, getBookings } = require('./controllers/bookingController');
+const { createUser } = require('./controllers/userControlle');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +29,8 @@ async function run() {
 
     app.get('/bookings', getBookings);
     app.post('/bookings', createBooking);
+
+    app.put('/users/:email', createUser);
   } finally {
   }
 }
