@@ -16,10 +16,12 @@ exports.getUsers = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   const email = req.params.email;
+
   const user = req.body.email;
+  const name = req.body.name;
   const filter = { email };
   const options = { upsert: true };
-  const updateDoc = { $set: { email: user } };
+  const updateDoc = { $set: { email: user, name } };
 
   const result = await userCollection.updateOne(filter, updateDoc, options);
   const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
