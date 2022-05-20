@@ -3,7 +3,7 @@ const serviceCollection = client.db('doctors_portal').collection('services');
 const bookingCollection = client.db('doctors_portal').collection('bookings');
 
 exports.getServices = async (req, res) => {
-  const services = await serviceCollection.find({}).toArray();
+  const services = await serviceCollection.find().project({ name: 1 }).toArray();
   res.send(services);
 };
 

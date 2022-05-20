@@ -2,10 +2,15 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { client } = require('./config/connectDB');
+
 const { getServices, getAvailableBookingSlot } = require('./controllers/serviceController');
+
 const { createBooking, getBookings } = require('./controllers/bookingController');
+
 const { createUser, getUsers, makeUserAdmin, isAdmin } = require('./controllers/userController');
+
 const { verifyToken } = require('./middleware/verifyToken');
+const { createDoctor } = require('./controllers/doctorController');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,9 +38,12 @@ async function run() {
     app.post('/bookings', createBooking);
 
     app.get('/users', verifyToken, getUsers);
-    app.get('/admin/:email', verifyToken, isAdmin);
     app.put('/users/:email', createUser);
+
     app.put('/users/make-admin/:email', verifyToken, makeUserAdmin);
+    app.get('/admin/:email', verifyToken, isAdmin);
+
+    app.post('/doctors', verifyToken, createDoctor);
   } finally {
   }
 }

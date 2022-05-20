@@ -24,7 +24,7 @@ exports.createUser = async (req, res) => {
   const updateDoc = { $set: { email: user, name } };
 
   const result = await userCollection.updateOne(filter, updateDoc, options);
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
   res.send({ result, token });
 };
