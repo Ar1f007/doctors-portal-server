@@ -2,6 +2,7 @@ const { client } = require('../config/connectDB');
 const bookingCollection = client.db('doctors_portal').collection('bookings');
 const nodemailer = require('nodemailer');
 const sgTransport = require('nodemailer-sendgrid-transport');
+const { ObjectId } = require('mongodb');
 
 const options = {
   auth: {
@@ -82,4 +83,20 @@ exports.getBookings = async (req, res) => {
   }
 
   return res.status(403).send({ message: 'Forbidden access' });
+};
+
+exports.getSingleBooking = async (req, res) => {
+  const id = req.params.id;
+  const patientEmail = req.query.email;
+
+  const exists = await bookingCollection.findOne({
+    patientEmail,
+    _id: ObjectId(id),
+  });
+
+  if (!exists) {
+    return res.status(401).send({ message: 'Login again to continue' });
+  }
+
+  return res.send(exists);
 };
