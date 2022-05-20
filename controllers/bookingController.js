@@ -3,6 +3,7 @@ const bookingCollection = client.db('doctors_portal').collection('bookings');
 const nodemailer = require('nodemailer');
 const sgTransport = require('nodemailer-sendgrid-transport');
 const { ObjectId } = require('mongodb');
+const stripe = require('stripe')(process.env.STRIPE_SK);
 
 const options = {
   auth: {
@@ -99,4 +100,35 @@ exports.getSingleBooking = async (req, res) => {
   }
 
   return res.send(exists);
+};
+
+exports.clientSecretGenerate = async (req, res) => {
+  const { price } = req.body;
+
+  const amount = +price * 100;
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount,
+    currency: 'usd',
+    payment_method_types: ['card'],
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+};
+
+exports.updateBooking = async (req, res) => {
+  const id = req.params.id;
+  const payment = req.body;
+  const bookingObj = await bookingCollection.findOne({ _id: ObjectId(id) });
+
+  const updatedDoc = {
+    $set: { paid: true, transactionId: payment.transactionId },
+  };
+
+  const updatingBooking = await bookingCollection.updateOne(bookingObj, updatedDoc);
+
+  res.send(updatingBooking);
 };
