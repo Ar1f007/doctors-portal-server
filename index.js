@@ -11,6 +11,7 @@ const { createUser, getUsers, makeUserAdmin, isAdmin } = require('./controllers/
 
 const { verifyToken } = require('./middleware/verifyToken');
 const { createDoctor } = require('./controllers/doctorController');
+const { verifyAdmin } = require('./middleware/verifyAdmin');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -40,10 +41,10 @@ async function run() {
     app.get('/users', verifyToken, getUsers);
     app.put('/users/:email', createUser);
 
-    app.put('/users/make-admin/:email', verifyToken, makeUserAdmin);
+    app.put('/users/make-admin/:email', verifyToken, verifyAdmin, makeUserAdmin);
     app.get('/admin/:email', verifyToken, isAdmin);
 
-    app.post('/doctors', verifyToken, createDoctor);
+    app.post('/doctors', verifyToken, verifyAdmin, createDoctor);
   } finally {
   }
 }

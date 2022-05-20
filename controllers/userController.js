@@ -30,17 +30,11 @@ exports.createUser = async (req, res) => {
 };
 
 exports.makeUserAdmin = async (req, res) => {
-  const initiatorEmail = req.user.email;
   const email = req.params.email;
-  const initiatorAccount = await userCollection.findOne({ email: initiatorEmail });
 
-  if (initiatorAccount.role === 'admin') {
-    const filter = { email };
-    const updateDoc = { $set: { role: 'admin' } };
-    const result = await userCollection.updateOne(filter, updateDoc);
+  const filter = { email };
+  const updateDoc = { $set: { role: 'admin' } };
+  const result = await userCollection.updateOne(filter, updateDoc);
 
-    return res.send(result);
-  }
-
-  return res.status(403).send({ message: 'You are not allowed to perform this action' });
+  return res.send(result);
 };
