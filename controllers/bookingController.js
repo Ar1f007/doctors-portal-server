@@ -1,5 +1,40 @@
 const { client } = require('../config/connectDB');
 const bookingCollection = client.db('doctors_portal').collection('bookings');
+const nodemailer = require('nodemailer');
+const sgTransport = require('nodemailer-sendgrid-transport');
+
+const options = {
+  auth: {
+    api_key: process.env.SENDGRID_API_KEY,
+  },
+};
+
+const emailClient = nodemailer.createTransport(sgTransport(options));
+
+const sendAppointmentEmail = (booking) => {
+  const { treatment, patientName, patientEmail, date, slot } = booking;
+  console.log(treatment, patientName, patientEmail, date, slot);
+  const email = {
+    from: process.env.EMAIL_SENDER,
+    to: patientEmail,
+    subject: 'Booking Confirmation',
+    text: `Your appointment for ${treatment} has been confirmed on ${date} at ${slot}`,
+    html: `
+      <div>
+      <b>Hello ${patientName}</b>,
+      <p>Your appointment for ${treatment} has been confirmed on ${date} at ${slot}<p/>
+      <div/>
+    `,
+  };
+
+  emailClient.sendMail(email, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Message sent: ', info);
+    }
+  });
+};
 
 exports.createBooking = async (req, res) => {
   const booking = req.body;
@@ -31,6 +66,7 @@ exports.createBooking = async (req, res) => {
     });
   }
   const response = await bookingCollection.insertOne(booking);
+  sendAppointmentEmail(booking);
   return res.send({ success: true, response });
 };
 
