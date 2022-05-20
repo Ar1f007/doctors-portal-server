@@ -4,13 +4,11 @@ require('dotenv').config();
 const { client } = require('./config/connectDB');
 
 const { getServices, getAvailableBookingSlot } = require('./controllers/serviceController');
-
 const { createBooking, getBookings } = require('./controllers/bookingController');
-
 const { createUser, getUsers, makeUserAdmin, isAdmin } = require('./controllers/userController');
+const { createDoctor, getDoctors, deleteDoctor } = require('./controllers/doctorController');
 
 const { verifyToken } = require('./middleware/verifyToken');
-const { createDoctor } = require('./controllers/doctorController');
 const { verifyAdmin } = require('./middleware/verifyAdmin');
 
 const app = express();
@@ -45,6 +43,8 @@ async function run() {
     app.get('/admin/:email', verifyToken, isAdmin);
 
     app.post('/doctors', verifyToken, verifyAdmin, createDoctor);
+    app.get('/doctors', verifyToken, verifyAdmin, getDoctors);
+    app.delete('/doctor/:id', verifyToken, verifyAdmin, deleteDoctor);
   } finally {
   }
 }
